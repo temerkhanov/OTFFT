@@ -13,14 +13,14 @@
 
 typedef LONGLONG counter_t;
 
-inline counter_t get_counter()
+static inline counter_t get_counter()
 {
     LARGE_INTEGER t;
     QueryPerformanceCounter(&t);
     return t.QuadPart;
 }
 
-inline double usec(const counter_t dt)
+static inline double usec(const counter_t dt)
 {
     LARGE_INTEGER f;
     QueryPerformanceFrequency(&f);
@@ -34,7 +34,7 @@ inline double usec(const counter_t dt)
 
 typedef unsigned long long counter_t;
 
-inline counter_t get_counter()
+static inline counter_t get_counter()
 {
     struct timeval tv;
     gettimeofday(&tv, 0);
@@ -43,7 +43,7 @@ inline counter_t get_counter()
     return us;
 }
 
-inline double usec(const counter_t dt) { return (double) dt; }
+static inline double usec(const counter_t dt) { return (double) dt; }
 
 #endif /* _MSC_VER || __WINNT__ */
 

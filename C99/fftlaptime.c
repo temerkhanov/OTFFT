@@ -11,7 +11,7 @@
 typedef double _Complex dcomplex;
 static const dcomplex j = _Complex_I;
 
-inline int imin(const int x, const int y) { return x < y ? x : y; }
+static inline int imin(const int x, const int y) { return x < y ? x : y; }
 
 int main()
 {
