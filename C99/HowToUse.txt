@@ -1,0 +1,224 @@
+This document describes how to use the OTFFT from C99.
+First, let's look at the sample code.
+
+/*****************************************************************************/
+#include <stdio.h>
+#include <math.h>
+#include <complex.h>
+#include "otfft/otfft.h"
+#include "otfft/stopwatch.h"
+
+typedef double _Complex dcomplex;
+static const dcomplex j = _Complex_I;
+
+inline int imin(const int x, const int y) { return x < y ? x : y; }
+
+int main()
+{
+    static const int n_max  = 22;
+    static const int N_max  = 1 << n_max;
+    static const int nN_max = n_max*N_max;
+
+    setbuf(stdout, NULL);
+    dcomplex *x = (dcomplex *) simd_malloc(N_max*sizeof(dcomplex));
+    for (int n = 1; n <= n_max; n++) {
+        printf("2^(%2d):", n);
+        const int N = 1 << n;
+        const int LOOPS = imin(70, n*4) * (nN_max/(n*N));
+        for (int p = 0; p < N; p++) {
+            const double t = (double) p / N;
+            x[p] = 10*cos(3*2*M_PI*t*t) + 10*j*sin(3*2*M_PI*t*t);
+        }
+        void *obj = otfft_fft_new(N);
+        const counter_t t1 = get_counter();
+        for (int i = 0; i < LOOPS; i++) {
+            otfft_fft_fwd(obj, x);
+            otfft_fft_inv(obj, x);
+        }
+        const counter_t t2 = get_counter();
+        otfft_fft_delete(obj);
+        printf("%11.2f[usec]\n", usec(t2 - t1) / LOOPS);
+    }
+    simd_free(x);
+    return 0;
+}
+/*****************************************************************************/
+
+So, I will comment on the important point.
+
+    #include "otfft/otfft.h"
+
+This code reads the interface to call C function of OTFFT. "otfft" folder
+should be included in the compiler include path.
+
+    dcomplex *x = (dcomplex *) simd_malloc(N_max*sizeof(dcomplex));
+
+This code allocates the aligned memory to use SSE2 and AVX.
+
+    void *obj = otfft_fft_new(N);
+
+This code generates the FFT object whose size is "N".
+
+If "void *obj = otfft_fft0_new(N);",      FFT0 object is generated.
+If "void *obj = otfft_rfft_new(N);",      RFFT object is generated.
+If "void *obj = otfft_dct_new(N);",       DCT  object is generated.
+If "void *obj = otfft_dct0_new(N);",      DCT0 object is generated.
+If "void *obj = otfft_bluestein_new(N);", Bluestein object is generated.
+
+Please refer to README.txt in the top folder for the details.
+
+    otfft_fft_fwd(obj, x);
+
+This code executes DFT of the "x" by OTFFT.
+
+    otfft_fft_inv(obj, x);
+
+This code executes IDFT of the "x" by OTFFT.
+
+    otfft_fft_delete(obj);
+
+This code destroys the FFT object.
+
+If "otfft_fft0_delete(obj);",      FFT0 object is destroyed.
+If "otfft_rfft_delete(obj);",      RFFT object is destroyed.
+If "otfft_dct_delete(obj);"        DCT  object is destroyed.
+If "otfft_dct0_delete(obj);"       DCT0 object is destroyed.
+If "otfft_bluestein_delete(obj);", Bluestein object is destroyed.
+
+    simd_free(x);
+
+This code frees the allocated memory(mem).
+
+To compile your code, do the following.
+
+    gcc -O3 -c hello.c
+    gcc hello.o otfft/otfft.o -lgomp -lstdc++ -o hello
+
+You need to ready "otfft.o". Please refer to README.txt in the top folder for
+the details.
+
+In the case that you compiled "otfft.o" by Clang in Mac, do the following.
+
+    clang-mp-3.9 -O3 -c hello.c
+    clang-mp-3.9 hello.o otfft/otfft.o -L/opt/local/lib/libomp -lomp -lc++ -o hello
+
+-------------------------------------------------------------------------------
+
+I show the list of supported transformation below.
+
+<< Complex-to-Complex DFT >>
+
+"N" is sequence length. We assume "x" and "y" as follows.
+
+  double _Complex *x;
+  double _Complex *y;
+
+"N" is an any natural number. When a big prime number is included in a prime
+factor, the complexity is O(N^2).
+
+[Fourier transform]
+  otfft_fft_fwd(obj, x)  1/N-normalized.    x:input/output.
+  otfft_fft_fwd0(obj, x) non-normalized.    x:input/output.
+  otfft_fft_fwdu(obj, x) unitary transform. x:input/output.
+  otfft_fft_fwdn(obj, x) 1/N-normalized.    x:input/output.
+
+[Inverse Fourier transform]
+  otfft_fft_inv(obj, x)  non-normalized.    x:input/output.
+  otfft_fft_inv0(obj, x) non-normalized.    x:input/output.
+  otfft_fft_invu(obj, x) unitary transform. x:input/output.
+  otfft_fft_invn(obj, x) 1/N-normalized.    x:input/output.
+
+In the multi-thread, we use the function of "fft0" series. "y" is the work area
+of the same length as the "x".
+
+[Fourier transform]
+  otfft_fft0_fwd(obj, x, y)  1/N-normalized.    x:input/output. y:work area.
+  otfft_fft0_fwd0(obj, x, y) non-normalized.    x:input/output. y:work area.
+  otfft_fft0_fwdu(obj, x, y) unitary transform. x:input/output. y:work area.
+  otfft_fft0_fwdn(obj, x, y) 1/N-normalized.    x:input/output. y:work area.
+
+[Inverse Fourier transform]
+  otfft_fft0_inv(obj, x, y)  non-normalized.    x:input/output. y:work area.
+  otfft_fft0_inv0(obj, x, y) non-normalized.    x:input/output. y:work area.
+  otfft_fft0_invu(obj, x, y) unitary transform. x:input/output. y:work area.
+  otfft_fft0_invn(obj, x, y) 1/N-normalized.    x:input/output. y:work area.
+
+
+<< Real-to-Complex DFT >>
+
+"N" is sequence length. We assume "x" and "y" as follows.
+
+  double *x;
+  double _Complex *y;
+
+"N" must be an even number. It can also be used in a multi-thread.
+In both "x" and "y", the length is "N".
+
+[Fourier transform]
+  otfft_rfft_fwd(obj, x, y)  1/N-normalized.    x:input. y:output.
+  otfft_rfft_fwd0(obj, x, y) non-normalized.    x:input. y:output.
+  otfft_rfft_fwdu(obj, x, y) unitary transform. x:input. y:output.
+  otfft_rfft_fwdn(obj, x, y) 1/N-normalized.    x:input. y:output.
+
+[Inverse Fourier Transform]
+  Input will be destroyed. "y" should be "y(N-p) = conjg(y(p))".
+  otfft_rfft_inv(obj, y, x)  non-normalized.    y:input. x:output.
+  otfft_rfft_inv0(obj, y, x) non-normalized.    y:input. x:output.
+  otfft_rfft_invu(obj, y, x) unitary transform. y:input. x:output.
+  otfft_rfft_invn(obj, y, x) 1/N-normalized.    y:input. x:output.
+
+
+<< discrete cosine transform(DCT-II:non-orthogonalization) >>
+
+"N" is sequence length. We assume "x" and "y" and "z" as follows.
+
+  double *x;
+  double *y;
+  double _Complex *z;
+
+"N" must be an even number.
+
+[DCT]
+  otfft_dct_fwd(obj, x)  1/N-normalized. x:input/output.
+  otfft_dct_fwd0(obj, x) non-normalized. x:input/output.
+  otfft_dct_fwdn(obj, x) 1/N-normalized. x:input/output.
+
+[IDCT]
+  otfft_dct_inv(obj, x)  non-normalized. x:input/output.
+  otfft_dct_inv0(obj, x) non-normalized. x:input/output.
+  otfft_dct_invn(obj, x) 1/N-normalized. x:input/output.
+
+In the multi-thread, we use the function of "dct0" series. "y" and "z" are the
+work area of the same length as the "x". "N" must be an even number.
+
+[DCT]
+  otfft_dct0_fwd(obj, x, y, z)  1/N-normalized. x:input/output. y,z:work area.
+  otfft_dct0_fwd0(obj, x, y, z) non-normalized. x:input/output. y,z:work area.
+  otfft_dct0_fwdn(obj, x, y, z) 1/N-normalized. x:input/output. y,z:work area.
+
+[IDCT]
+  otfft_dct0_inv(obj, x, y, z)  non-normalized. x:input/output. y,z:work area.
+  otfft_dct0_inv0(obj, x, y, z) non-normalized. x:input/output. y,z:work area.
+  otfft_dct0_invn(obj, x, y, z) 1/N-normalized. x:input/output. y,z:work area.
+
+
+<< Bluestein's FFT >>
+
+Bluestein's FFT is the any length FFT. Even if the sequence length is a big
+prime number, the complexity is O(N log N). We assume "x" as follows.
+
+  double _Complex *x;
+
+Multi-thread routines are not provided.
+
+[Fourier transform]
+  otfft_bluestein_fwd(obj, x)  1/N-normalized.    x:input/output.
+  otfft_bluestein_fwd0(obj, x) non-normalized.    x:input/output.
+  otfft_bluestein_fwdu(obj, x) unitary transform. x:input/output.
+  otfft_bluestein_fwdn(obj, x) 1/N-normalized.    x:input/output.
+
+[Inverse Fourier transform]
+  otfft_bluestein_inv(obj, x)  non-normalized.    x:input/output.
+  otfft_bluestein_inv0(obj, x) non-normalized.    x:input/output.
+  otfft_bluestein_invu(obj, x) unitary transform. x:input/output.
+  otfft_bluestein_invn(obj, x) 1/N-normalized.    x:input/output.

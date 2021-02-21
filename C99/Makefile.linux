@@ -1,0 +1,39 @@
+#CC := gcc
+CFLAGS := -O3
+#CFLAGS += -msse2 -mfpmath=sse
+CFLAGS += -march=native
+CFLAGS += -funroll-all-loops
+
+OMPLIB := -lgomp
+#OMPLIB := -L/alt/lib -liomp5
+
+LIBCXX := -lstdc++ -lm
+
+laptime: fftlaptime
+
+clean:
+	@rm -f fftcheck rfftcheck dctcheck bstcheck fftlaptime
+	@rm -f *.o *.exe
+
+otfft/otfft.o: otfft/otfft.cpp $(wildcard otfft/otfft*.h) otfft/Makefile.linux
+	@$(MAKE) -C otfft otfft.o
+
+fftlaptime.o: fftlaptime.c Makefile.linux
+fftlaptime: fftlaptime.o otfft/otfft.o
+	$(CC) $^ $(OMPLIB) $(LIBCXX) -o $@
+
+fftcheck.o: fftcheck.c Makefile.linux
+fftcheck: fftcheck.o otfft/otfft.o
+	$(CC) $^ $(OMPLIB) $(LIBCXX) -o $@
+
+rfftcheck.o: rfftcheck.c Makefile.linux
+rfftcheck: rfftcheck.o otfft/otfft.o
+	$(CC) $^ $(OMPLIB) $(LIBCXX) -o $@
+
+dctcheck.o: dctcheck.c Makefile.linux
+dctcheck: dctcheck.o otfft/otfft.o
+	$(CC) $^ $(OMPLIB) $(LIBCXX) -o $@
+
+bstcheck.o: bstcheck.c Makefile.linux
+bstcheck: bstcheck.o otfft/otfft.o
+	$(CC) $^ $(OMPLIB) $(LIBCXX) -o $@
