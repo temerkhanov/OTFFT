@@ -1,0 +1,17 @@
+add_executable(bstcheck_c99 bstcheck.c)
+add_executable(dctcheck_c99 dctcheck.c)
+add_executable(fftcheck_c99 fftcheck.c)
+add_executable(rfftcheck_c99 rfftcheck.c)
+add_executable(fftlaptime_c99 fftlaptime.c)
+
+target_link_libraries(bstcheck_c99 otfft m)
+target_link_libraries(dctcheck_c99 otfft m)
+target_link_libraries(fftcheck_c99 otfft m)
+target_link_libraries(rfftcheck_c99 otfft m)
+target_link_libraries(fftlaptime_c99 otfft m)
+
+set_target_properties(bstcheck_c99 PROPERTIES OUTPUT_NAME bstcheck)
+set_target_properties(dctcheck_c99 PROPERTIES OUTPUT_NAME dctcheck)
+set_target_properties(fftcheck_c99 PROPERTIES OUTPUT_NAME fftcheck)
+set_target_properties(rfftcheck_c99 PROPERTIES OUTPUT_NAME rfftcheck)
+set_target_properties(fftlaptime_c99 PROPERTIES OUTPUT_NAME fftlaptime)

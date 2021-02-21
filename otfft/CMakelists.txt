@@ -1,0 +1,23 @@
+
+set(OTFFT_GEN_HEADERS otfft_gen_delete.h otfft_gen_fwd.h otfft_gen_fwd0.h
+                      otfft_gen_fwdu.h otfft_gen_inv.h otfft_gen_invn.h
+                      otfft_gen_invu.h otfft_gen_new.h otfft_gen_setup.h)
+
+add_executable(ffttune ffttune.cpp)
+add_executable(rewrite rewrite.cpp)
+
+target_link_libraries(ffttune ${OpenMP_CXX_LIB_NAMES})
+
+add_custom_command(OUTPUT ${OTFFT_GEN_HEADERS}
+                   COMMAND ffttune
+                   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                   USES_TERMINAL
+                   COMMENT "Tuning the library")
+
+add_custom_target(run_ffttune DEPENDS ffttune)
+
+add_library(otfft SHARED otfft.cpp  ${OTFFT_GEN_HEADERS})
+target_link_libraries(otfft ${OpenMP_CXX_LIB_NAMES})
+add_dependencies(otfft ffttune run_ffttune)
+target_include_directories(otfft BEFORE
+                           PRIVATE ${CMAKE_CURRENT_BINARY_DIR})

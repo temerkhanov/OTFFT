@@ -1,0 +1,18 @@
+add_executable(bstlaptime_f03 bstlaptime.f03)
+add_executable(dctlaptime_f03 dctlaptime.f03)
+add_executable(fftlaptime_f03 fftlaptime.f03)
+add_executable(rfftlaptime_f03 rfftlaptime.f03)
+
+target_link_libraries(bstlaptime_f03 otfft)
+target_link_libraries(dctlaptime_f03 otfft)
+target_link_libraries(fftlaptime_f03 otfft)
+target_link_libraries(rfftlaptime_f03 otfft)
+
+set_source_files_properties(bstlaptime.f03 PROPERTIES LANGUAGE Fortran)
+set_target_properties(bstlaptime_f03 PROPERTIES OUTPUT_NAME bstlaptime)
+set_source_files_properties(dctlaptime.f03 PROPERTIES LANGUAGE Fortran)
+set_target_properties(dctlaptime_f03 PROPERTIES OUTPUT_NAME dctlaptime)
+set_source_files_properties(fftlaptime.f03 PROPERTIES LANGUAGE Fortran)
+set_target_properties(fftlaptime_f03 PROPERTIES OUTPUT_NAME fftlaptime)
+set_source_files_properties(rfftlaptime.f03 PROPERTIES LANGUAGE Fortran)
+set_target_properties(rfftlaptime_f03 PROPERTIES OUTPUT_NAME rfftlaptime)
