@@ -13,6 +13,12 @@
 
 #include "otfft_complex.h"
 
+#ifdef OTFFT_LIBRARY_BUILD
+#include <otfft_exports.h>
+#else
+#define OTFFT_EXPORT
+#endif
+
 namespace OTFFT { /////////////////////////////////////////////////////////////
 
 using namespace OTFFT_Complex;
@@ -26,20 +32,20 @@ struct FFT0
     void* obj;
     int N, log_N;
 
-    FFT0() NOEXCEPT;
-    FFT0(int n);
-    ~FFT0() NOEXCEPT;
+    OTFFT_EXPORT FFT0() NOEXCEPT;
+    OTFFT_EXPORT FFT0(int n);
+    OTFFT_EXPORT ~FFT0() NOEXCEPT;
 
-    void setup(int n);
+    OTFFT_EXPORT void setup(int n);
 
-    void fwd(complex_vector  x, complex_vector y) const NOEXCEPT;
-    void fwd0(complex_vector x, complex_vector y) const NOEXCEPT;
-    void fwdu(complex_vector x, complex_vector y) const NOEXCEPT;
-    void fwdn(complex_vector x, complex_vector y) const NOEXCEPT;
-    void inv(complex_vector  x, complex_vector y) const NOEXCEPT;
-    void inv0(complex_vector x, complex_vector y) const NOEXCEPT;
-    void invu(complex_vector x, complex_vector y) const NOEXCEPT;
-    void invn(complex_vector x, complex_vector y) const NOEXCEPT;
+    OTFFT_EXPORT void fwd(complex_vector  x, complex_vector y) const NOEXCEPT;
+    OTFFT_EXPORT void fwd0(complex_vector x, complex_vector y) const NOEXCEPT;
+    OTFFT_EXPORT void fwdu(complex_vector x, complex_vector y) const NOEXCEPT;
+    OTFFT_EXPORT void fwdn(complex_vector x, complex_vector y) const NOEXCEPT;
+    OTFFT_EXPORT void inv(complex_vector  x, complex_vector y) const NOEXCEPT;
+    OTFFT_EXPORT void inv0(complex_vector x, complex_vector y) const NOEXCEPT;
+    OTFFT_EXPORT void invu(complex_vector x, complex_vector y) const NOEXCEPT;
+    OTFFT_EXPORT void invn(complex_vector x, complex_vector y) const NOEXCEPT;
 };
 
 struct FFT
@@ -82,19 +88,19 @@ struct RFFT
     simd_array<complex_t> weight;
     complex_t* U;
 
-    RFFT() NOEXCEPT;
-    RFFT(int n);
+    OTFFT_EXPORT RFFT() NOEXCEPT;
+    OTFFT_EXPORT RFFT(int n);
 
-    void setup(int n);
+    OTFFT_EXPORT void setup(int n);
 
-    void fwd(const_double_vector  x, complex_vector y) const NOEXCEPT;
-    void fwd0(const_double_vector x, complex_vector y) const NOEXCEPT;
-    void fwdu(const_double_vector x, complex_vector y) const NOEXCEPT;
-    void fwdn(const_double_vector x, complex_vector y) const NOEXCEPT;
-    void inv(complex_vector  x, double_vector y) const NOEXCEPT;
-    void inv0(complex_vector x, double_vector y) const NOEXCEPT;
-    void invu(complex_vector x, double_vector y) const NOEXCEPT;
-    void invn(complex_vector x, double_vector y) const NOEXCEPT;
+    OTFFT_EXPORT void fwd(const_double_vector  x, complex_vector y) const NOEXCEPT;
+    OTFFT_EXPORT void fwd0(const_double_vector x, complex_vector y) const NOEXCEPT;
+    OTFFT_EXPORT void fwdu(const_double_vector x, complex_vector y) const NOEXCEPT;
+    OTFFT_EXPORT void fwdn(const_double_vector x, complex_vector y) const NOEXCEPT;
+    OTFFT_EXPORT void inv(complex_vector  x, double_vector y) const NOEXCEPT;
+    OTFFT_EXPORT void inv0(complex_vector x, double_vector y) const NOEXCEPT;
+    OTFFT_EXPORT void invu(complex_vector x, double_vector y) const NOEXCEPT;
+    OTFFT_EXPORT void invn(complex_vector x, double_vector y) const NOEXCEPT;
 };
 
 /******************************************************************************
@@ -116,17 +122,17 @@ struct DCT0
     simd_array<complex_t> weight;
     complex_t* V;
 
-    DCT0() NOEXCEPT;
-    DCT0(int n);
+    OTFFT_EXPORT DCT0() NOEXCEPT;
+    OTFFT_EXPORT DCT0(int n);
 
-    void setup(int n);
+    OTFFT_EXPORT void setup(int n);
 
-    void fwd(double_vector  x, double_vector y, complex_vector z) const NOEXCEPT;
-    void fwd0(double_vector x, double_vector y, complex_vector z) const NOEXCEPT;
-    void fwdn(double_vector x, double_vector y, complex_vector z) const NOEXCEPT;
-    void inv(double_vector  x, double_vector y, complex_vector z) const NOEXCEPT;
-    void inv0(double_vector x, double_vector y, complex_vector z) const NOEXCEPT;
-    void invn(double_vector x, double_vector y, complex_vector z) const NOEXCEPT;
+    OTFFT_EXPORT void fwd(double_vector  x, double_vector y, complex_vector z) const NOEXCEPT;
+    OTFFT_EXPORT void fwd0(double_vector x, double_vector y, complex_vector z) const NOEXCEPT;
+    OTFFT_EXPORT void fwdn(double_vector x, double_vector y, complex_vector z) const NOEXCEPT;
+    OTFFT_EXPORT void inv(double_vector  x, double_vector y, complex_vector z) const NOEXCEPT;
+    OTFFT_EXPORT void inv0(double_vector x, double_vector y, complex_vector z) const NOEXCEPT;
+    OTFFT_EXPORT void invn(double_vector x, double_vector y, complex_vector z) const NOEXCEPT;
 };
 
 struct DCT
@@ -180,19 +186,19 @@ struct Bluestein
     complex_t* b;
     complex_t* W;
 
-    Bluestein() NOEXCEPT;
-    Bluestein(int n);
+    OTFFT_EXPORT Bluestein() NOEXCEPT;
+    OTFFT_EXPORT Bluestein(int n);
 
-    void setup(int n);
+    OTFFT_EXPORT void setup(int n);
 
-    void fwd(complex_vector  x) const NOEXCEPT;
-    void fwd0(complex_vector x) const NOEXCEPT;
-    void fwdu(complex_vector x) const NOEXCEPT;
-    void fwdn(complex_vector x) const NOEXCEPT;
-    void inv(complex_vector  x) const NOEXCEPT;
-    void inv0(complex_vector x) const NOEXCEPT;
-    void invu(complex_vector x) const NOEXCEPT;
-    void invn(complex_vector x) const NOEXCEPT;
+    OTFFT_EXPORT void fwd(complex_vector  x) const NOEXCEPT;
+    OTFFT_EXPORT void fwd0(complex_vector x) const NOEXCEPT;
+    OTFFT_EXPORT void fwdu(complex_vector x) const NOEXCEPT;
+    OTFFT_EXPORT void fwdn(complex_vector x) const NOEXCEPT;
+    OTFFT_EXPORT void inv(complex_vector  x) const NOEXCEPT;
+    OTFFT_EXPORT void inv0(complex_vector x) const NOEXCEPT;
+    OTFFT_EXPORT void invu(complex_vector x) const NOEXCEPT;
+    OTFFT_EXPORT void invn(complex_vector x) const NOEXCEPT;
 };
 
 } /////////////////////////////////////////////////////////////////////////////
