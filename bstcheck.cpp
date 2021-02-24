@@ -2,10 +2,12 @@
 *  FFT Consistency Check
 ******************************************************************************/
 
+#define _USE_MATH_DEFINES
 #include <iostream>
 #include <iomanip>
 #include <cstdlib>
 #include <ctime>
+#include <cmath>
 #include "otfft/otfft.h"
 using namespace std;
 using OTFFT::complex_t;

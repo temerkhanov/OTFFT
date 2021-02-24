@@ -9,71 +9,74 @@
 #ifndef otfft_c_cpp
 #define otfft_c_cpp
 
+#include "otfft.h"
+#include "otfft_c.h"
+
 extern "C" {
     //=========================================================================
 
-    void *simd_malloc(size_t n) { return OTFFT::simd_malloc(n); }
-    void simd_free(void *p) { OTFFT::simd_free(p); }
+    OTFFT_EXPORT void *simd_malloc(size_t n) { return OTFFT::simd_malloc(n); }
+    OTFFT_EXPORT void simd_free(void *p) { OTFFT::simd_free(p); }
 
     //=========================================================================
 
-    void *otfft_fft_new(int N)
+    OTFFT_EXPORT void *otfft_fft_new(int N)
     {
         OTFFT::FFT *fft = 0;
         try { fft = new OTFFT::FFT(N); }
         catch (...) { return 0; }
         return fft;
     }
-    void otfft_fft_delete(void *p)
+    OTFFT_EXPORT void otfft_fft_delete(void *p)
     {
         OTFFT::FFT *fft = (OTFFT::FFT *) p;
         delete fft;
     }
 
-    void otfft_fft_fwd(void *p, double _Complex *x)
+    OTFFT_EXPORT void otfft_fft_fwd(void *p, ccomplex_t *x)
     {
         OTFFT::FFT *fft = (OTFFT::FFT *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         fft->fwd(x_);
     }
-    void otfft_fft_fwd0(void *p, double _Complex *x)
+    OTFFT_EXPORT void otfft_fft_fwd0(void *p, ccomplex_t *x)
     {
         OTFFT::FFT *fft = (OTFFT::FFT *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         fft->fwd0(x_);
     }
-    void otfft_fft_fwdu(void *p, double _Complex *x)
+    OTFFT_EXPORT void otfft_fft_fwdu(void *p, ccomplex_t *x)
     {
         OTFFT::FFT *fft = (OTFFT::FFT *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         fft->fwdu(x_);
     }
-    void otfft_fft_fwdn(void *p, double _Complex *x)
+    OTFFT_EXPORT void otfft_fft_fwdn(void *p, ccomplex_t *x)
     {
         OTFFT::FFT *fft = (OTFFT::FFT *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         fft->fwdn(x_);
     }
 
-    void otfft_fft_inv(void *p, double _Complex *x)
+    OTFFT_EXPORT void otfft_fft_inv(void *p, ccomplex_t *x)
     {
         OTFFT::FFT *fft = (OTFFT::FFT *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         fft->inv(x_);
     }
-    void otfft_fft_inv0(void *p, double _Complex *x)
+    OTFFT_EXPORT void otfft_fft_inv0(void *p, ccomplex_t *x)
     {
         OTFFT::FFT *fft = (OTFFT::FFT *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         fft->inv0(x_);
     }
-    void otfft_fft_invu(void *p, double _Complex *x)
+    OTFFT_EXPORT void otfft_fft_invu(void *p, ccomplex_t *x)
     {
         OTFFT::FFT *fft = (OTFFT::FFT *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         fft->invu(x_);
     }
-    void otfft_fft_invn(void *p, double _Complex *x)
+    OTFFT_EXPORT void otfft_fft_invn(void *p, ccomplex_t *x)
     {
         OTFFT::FFT *fft = (OTFFT::FFT *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
@@ -95,28 +98,28 @@ extern "C" {
         delete fft;
     }
 
-    void otfft_fft0_fwd(void *p, double _Complex *x, double _Complex *y)
+    void otfft_fft0_fwd(void *p, ccomplex_t *x, ccomplex_t *y)
     {
         OTFFT::FFT0 *fft = (OTFFT::FFT0 *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         OTFFT::complex_t *y_ = (OTFFT::complex_t *) y;
         fft->fwd(x_, y_);
     }
-    void otfft_fft0_fwd0(void *p, double _Complex *x, double _Complex *y)
+    void otfft_fft0_fwd0(void *p, ccomplex_t *x, ccomplex_t *y)
     {
         OTFFT::FFT0 *fft = (OTFFT::FFT0 *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         OTFFT::complex_t *y_ = (OTFFT::complex_t *) y;
         fft->fwd0(x_, y_);
     }
-    void otfft_fft0_fwdu(void *p, double _Complex *x, double _Complex *y)
+    void otfft_fft0_fwdu(void *p, ccomplex_t *x, ccomplex_t *y)
     {
         OTFFT::FFT0 *fft = (OTFFT::FFT0 *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         OTFFT::complex_t *y_ = (OTFFT::complex_t *) y;
         fft->fwdu(x_, y_);
     }
-    void otfft_fft0_fwdn(void *p, double _Complex *x, double _Complex *y)
+    void otfft_fft0_fwdn(void *p, ccomplex_t *x, ccomplex_t *y)
     {
         OTFFT::FFT0 *fft = (OTFFT::FFT0 *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
@@ -124,28 +127,28 @@ extern "C" {
         fft->fwdn(x_, y_);
     }
 
-    void otfft_fft0_inv(void *p, double _Complex *x, double _Complex *y)
+    void otfft_fft0_inv(void *p, ccomplex_t *x, ccomplex_t *y)
     {
         OTFFT::FFT0 *fft = (OTFFT::FFT0 *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         OTFFT::complex_t *y_ = (OTFFT::complex_t *) y;
         fft->inv(x_, y_);
     }
-    void otfft_fft0_inv0(void *p, double _Complex *x, double _Complex *y)
+    void otfft_fft0_inv0(void *p, ccomplex_t *x, ccomplex_t *y)
     {
         OTFFT::FFT0 *fft = (OTFFT::FFT0 *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         OTFFT::complex_t *y_ = (OTFFT::complex_t *) y;
         fft->inv0(x_, y_);
     }
-    void otfft_fft0_invu(void *p, double _Complex *x, double _Complex *y)
+    void otfft_fft0_invu(void *p, ccomplex_t *x, ccomplex_t *y)
     {
         OTFFT::FFT0 *fft = (OTFFT::FFT0 *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         OTFFT::complex_t *y_ = (OTFFT::complex_t *) y;
         fft->invu(x_, y_);
     }
-    void otfft_fft0_invn(void *p, double _Complex *x, double _Complex *y)
+    void otfft_fft0_invn(void *p, ccomplex_t *x, ccomplex_t *y)
     {
         OTFFT::FFT0 *fft = (OTFFT::FFT0 *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
@@ -168,50 +171,50 @@ extern "C" {
         delete rfft;
     }
 
-    void otfft_rfft_fwd(void *p, const double *x, double _Complex *y)
+    void otfft_rfft_fwd(void *p, const double *x, ccomplex_t *y)
     {
         OTFFT::RFFT *rfft = (OTFFT::RFFT *) p;
         OTFFT::complex_t *y_ = (OTFFT::complex_t *) y;
         rfft->fwd(x, y_);
     }
-    void otfft_rfft_fwd0(void *p, const double *x, double _Complex *y)
+    void otfft_rfft_fwd0(void *p, const double *x, ccomplex_t *y)
     {
         OTFFT::RFFT *rfft = (OTFFT::RFFT *) p;
         OTFFT::complex_t *y_ = (OTFFT::complex_t *) y;
         rfft->fwd0(x, y_);
     }
-    void otfft_rfft_fwdu(void *p, const double *x, double _Complex *y)
+    void otfft_rfft_fwdu(void *p, const double *x, ccomplex_t *y)
     {
         OTFFT::RFFT *rfft = (OTFFT::RFFT *) p;
         OTFFT::complex_t *y_ = (OTFFT::complex_t *) y;
         rfft->fwdu(x, y_);
     }
-    void otfft_rfft_fwdn(void *p, const double *x, double _Complex *y)
+    void otfft_rfft_fwdn(void *p, const double *x, ccomplex_t *y)
     {
         OTFFT::RFFT *rfft = (OTFFT::RFFT *) p;
         OTFFT::complex_t *y_ = (OTFFT::complex_t *) y;
         rfft->fwdn(x, y_);
     }
 
-    void otfft_rfft_inv(void *p, double _Complex *x, double *y)
+    void otfft_rfft_inv(void *p, ccomplex_t *x, double *y)
     {
         OTFFT::RFFT *rfft = (OTFFT::RFFT *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         rfft->inv(x_, y);
     }
-    void otfft_rfft_inv0(void *p, double _Complex *x, double *y)
+    void otfft_rfft_inv0(void *p, ccomplex_t *x, double *y)
     {
         OTFFT::RFFT *rfft = (OTFFT::RFFT *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         rfft->inv0(x_, y);
     }
-    void otfft_rfft_invu(void *p, double _Complex *x, double *y)
+    void otfft_rfft_invu(void *p, ccomplex_t *x, double *y)
     {
         OTFFT::RFFT *rfft = (OTFFT::RFFT *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         rfft->invu(x_, y);
     }
-    void otfft_rfft_invn(void *p, double _Complex *x, double *y)
+    void otfft_rfft_invn(void *p, ccomplex_t *x, double *y)
     {
         OTFFT::RFFT *rfft = (OTFFT::RFFT *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
@@ -280,38 +283,38 @@ extern "C" {
         delete dct;
     }
 
-    void otfft_dct0_fwd(void *p, double *x, double *y, double _Complex *z)
+    void otfft_dct0_fwd(void *p, double *x, double *y, ccomplex_t *z)
     {
         OTFFT::DCT0 *dct = (OTFFT::DCT0 *) p;
         OTFFT::complex_t *z_ = (OTFFT::complex_t *) z;
         dct->fwd(x, y, z_);
     }
-    void otfft_dct0_fwd0(void *p, double *x, double *y, double _Complex *z)
+    void otfft_dct0_fwd0(void *p, double *x, double *y, ccomplex_t *z)
     {
         OTFFT::DCT0 *dct = (OTFFT::DCT0 *) p;
         OTFFT::complex_t *z_ = (OTFFT::complex_t *) z;
         dct->fwd0(x, y, z_);
     }
-    void otfft_dct0_fwdn(void *p, double *x, double *y, double _Complex *z)
+    void otfft_dct0_fwdn(void *p, double *x, double *y, ccomplex_t *z)
     {
         OTFFT::DCT0 *dct = (OTFFT::DCT0 *) p;
         OTFFT::complex_t *z_ = (OTFFT::complex_t *) z;
         dct->fwdn(x, y, z_);
     }
 
-    void otfft_dct0_inv(void *p, double *x, double *y, double _Complex *z)
+    void otfft_dct0_inv(void *p, double *x, double *y, ccomplex_t *z)
     {
         OTFFT::DCT0 *dct = (OTFFT::DCT0 *) p;
         OTFFT::complex_t *z_ = (OTFFT::complex_t *) z;
         dct->inv(x, y, z_);
     }
-    void otfft_dct0_inv0(void *p, double *x, double *y, double _Complex *z)
+    void otfft_dct0_inv0(void *p, double *x, double *y, ccomplex_t *z)
     {
         OTFFT::DCT0 *dct = (OTFFT::DCT0 *) p;
         OTFFT::complex_t *z_ = (OTFFT::complex_t *) z;
         dct->inv0(x, y, z_);
     }
-    void otfft_dct0_invn(void *p, double *x, double *y, double _Complex *z)
+    void otfft_dct0_invn(void *p, double *x, double *y, ccomplex_t *z)
     {
         OTFFT::DCT0 *dct = (OTFFT::DCT0 *) p;
         OTFFT::complex_t *z_ = (OTFFT::complex_t *) z;
@@ -333,50 +336,50 @@ extern "C" {
         delete bst;
     }
 
-    void otfft_bluestein_fwd(void *p, double _Complex *x)
+    void otfft_bluestein_fwd(void *p, ccomplex_t *x)
     {
         OTFFT::Bluestein *bst = (OTFFT::Bluestein *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         bst->fwd(x_);
     }
-    void otfft_bluestein_fwd0(void *p, double _Complex *x)
+    void otfft_bluestein_fwd0(void *p, ccomplex_t *x)
     {
         OTFFT::Bluestein *bst = (OTFFT::Bluestein *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         bst->fwd0(x_);
     }
-    void otfft_bluestein_fwdu(void *p, double _Complex *x)
+    void otfft_bluestein_fwdu(void *p, ccomplex_t *x)
     {
         OTFFT::Bluestein *bst = (OTFFT::Bluestein *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         bst->fwdu(x_);
     }
-    void otfft_bluestein_fwdn(void *p, double _Complex *x)
+    void otfft_bluestein_fwdn(void *p, ccomplex_t *x)
     {
         OTFFT::Bluestein *bst = (OTFFT::Bluestein *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         bst->fwdn(x_);
     }
 
-    void otfft_bluestein_inv(void *p, double _Complex *x)
+    void otfft_bluestein_inv(void *p, ccomplex_t *x)
     {
         OTFFT::Bluestein *bst = (OTFFT::Bluestein *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         bst->inv(x_);
     }
-    void otfft_bluestein_inv0(void *p, double _Complex *x)
+    void otfft_bluestein_inv0(void *p, ccomplex_t *x)
     {
         OTFFT::Bluestein *bst = (OTFFT::Bluestein *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         bst->inv0(x_);
     }
-    void otfft_bluestein_invu(void *p, double _Complex *x)
+    void otfft_bluestein_invu(void *p, ccomplex_t *x)
     {
         OTFFT::Bluestein *bst = (OTFFT::Bluestein *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;
         bst->invu(x_);
     }
-    void otfft_bluestein_invn(void *p, double _Complex *x)
+    void otfft_bluestein_invn(void *p, ccomplex_t *x)
     {
         OTFFT::Bluestein *bst = (OTFFT::Bluestein *) p;
         OTFFT::complex_t *x_ = (OTFFT::complex_t *) x;

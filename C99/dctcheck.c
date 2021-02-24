@@ -2,14 +2,13 @@
 *  OTFFT C99 Sample
 ******************************************************************************/
 
+#define _USE_MATH_DEFINES
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
 #include <complex.h>
-#include "otfft/otfft.h"
-
-typedef double complex dcomplex;
+#include "otfft.h"
 
 void dct_fwd0(int N, double *x)
 {
@@ -110,7 +109,7 @@ void check_dct0()
     double *y = (double *) simd_malloc(N*sizeof(double));
     double *z = (double *) simd_malloc(N*sizeof(double));
     double *v = (double *) simd_malloc(N*sizeof(double));
-    dcomplex *w = (dcomplex *) simd_malloc(N*sizeof(dcomplex));
+    ccomplex_t  *w = (ccomplex_t  *) simd_malloc(N*sizeof(ccomplex_t ));
     for (int p = 0; p < N; p++) z[p] = rand()%100;
     void *obj = otfft_dct0_new(N);
     /*************************************************************************/

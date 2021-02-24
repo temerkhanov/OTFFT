@@ -228,7 +228,9 @@ static inline complex_t expj(const double& theta) NOEXCEPT
 //=============================================================================
 
 #include <new>
+#ifdef __SSE2__
 #include <immintrin.h>
+#endif
 
 #ifdef __MINGW32__
 #include <malloc.h>
@@ -236,23 +238,27 @@ static inline complex_t expj(const double& theta) NOEXCEPT
 
 namespace OTFFT_Complex {
 
-#ifdef __SSE2__
-#ifndef __AVX__
-static inline void* simd_malloc(const size_t n) { return _mm_malloc(n, 16); }
-#endif
-#else
-static inline void* simd_malloc(const size_t n) { return malloc(n); }
+
+#if defined(__AVX512F__)
+#define SIMD_ALIGNMENT 64
+#elif defined(__AVX__)
+#define SIMD_ALIGNMENT 32
+#elif defined(__SSE2__)
+#define SIMD_ALIGNMENT 16
+#elif (__ARM_ARCH >= 8)
+#define SIMD_ALIGNMENT 16
 #endif
 
-#ifdef __AVX__
-#ifdef __AVX512F__
-static inline void* simd_malloc(const size_t n) { return _mm_malloc(n, 64); }
+#if defined(__AVX512F__) || defined (__AVX__) || defined (__SSE2__)
+    static inline void* simd_malloc(const size_t n) { return _mm_malloc(n, SIMD_ALIGNMENT); }
+    static inline void simd_free(void* p) { _mm_free(p); }
+#elif defined(SIMD_ALIGNMENT)
+    static inline void* simd_malloc(const size_t n) { return aligned_alloc(SIMD_ALIGNMENT, n); }
+    static inline void simd_free(void* p) { free(p); }
 #else
-static inline void* simd_malloc(const size_t n) { return _mm_malloc(n, 32); }
+    static inline void* simd_malloc(const size_t n) { return malloc(n); }
+    static inline void simd_free(void* p) { free(p); }
 #endif
-#endif
-
-static inline void simd_free(void* p) { _mm_free(p); }
 
 template <class T> struct simd_array
 {

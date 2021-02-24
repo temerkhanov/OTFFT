@@ -2,12 +2,13 @@
 *  OTFFT C99 Sample
 ******************************************************************************/
 
+#define _USE_MATH_DEFINES
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
 #include <complex.h>
-#include "otfft/otfft.h"
+#include "otfft.h"
 
 typedef double complex dcomplex;
 static const dcomplex j = _Complex_I;
