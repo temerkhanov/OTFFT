@@ -1,6 +1,16 @@
 project(otfft NONE)
-
 cmake_minimum_required(VERSION 3.16)
+
+set(DEFAULT_BUILD_TYPE "Release")
+
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "Setting build type to '${DEFAULT_BUILD_TYPE}' as none was specified.")
+  set(CMAKE_BUILD_TYPE "${DEFAULT_BUILD_TYPE}" CACHE
+      STRING "Choose the type of build." FORCE)
+  # Set the possible values of build type for cmake-gui
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
+    "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+endif()
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -17,23 +27,23 @@ endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_compile_options(-Ofast -march=native -ffast-math -mprefer-vector-width=256)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES  "GNU")
+elseif (CMAKE_CXX_COMPILER_ID MATCHES  "GNU")
     add_compile_options(-Ofast -march=native -ffast-math)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "Intel")
-    add_compile_options(/Ofast /Qa /EHs /QxHost /Qipo /Qunroll-aggressive
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+    add_compile_options(/Ofast /Oa /EHs /QxHost /Qipo /Qunroll-aggressive
                         /Qcomplex-limited-range /Qalias-const /Qvec-guard-write
                         /Qopt-subscript-in-range /Qopt-matmul /Qopt-mem-layout-trans:3
                         /Qopt-prefetch /Qopt-prefetch-issue-excl-hint /Qopt-dynamic-align
                         /Qalign-loops /Qopt-zmm-usage:high /Qbranches-within-32B-boundaries
                         /Qfp-speculation:fast /Qfast-transcendentals /Qimf-use-svml:true
-                        /Qfinite-math-only /Ob2 /ZI /Qfnalign /Qfsalign)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+                        /Qfinite-math-only /Ob2 /ZI /Qfnalign /Qsfalign16 /Qalign-loops)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     add_compile_options(/Ox /favor:Intel64 /Ob2 /EHsc /fp:fast /Qspectre- /arch:AVX2
                         /openmp)
-endif()
+endif ()
 
 add_subdirectory(otfft)
-add_subdirectory(C99)
+#add_subdirectory(C99)
 
 if (CMAKE_FORTRAN_COMPILER_ID)
     add_subdirectory(Fortran2003)
