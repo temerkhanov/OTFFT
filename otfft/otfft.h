@@ -9,8 +9,6 @@
 #ifndef otfft_h
 #define otfft_h
 
-#ifdef __cplusplus
-
 #include "otfft_complex.h"
 
 #ifdef OTFFT_LIBRARY_BUILD
@@ -202,9 +200,5 @@ struct Bluestein
 };
 
 } /////////////////////////////////////////////////////////////////////////////
-
-#else
-#include "otfft_c.h"
-#endif // __cplusplus
 
 #endif // otfft_h
