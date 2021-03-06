@@ -25,18 +25,15 @@ if (OPENMP_FOUND)
 endif()
 
 
-if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+if (CMAKE_CXX_COMPILER_ID MATCHES "IntelClang")
+    set(MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    add_compile_options(/Ofast /Oa /EHs /QxHost /Qipo)
+elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_compile_options(-Ofast -march=native -ffast-math -mprefer-vector-width=256)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES  "GNU")
     add_compile_options(-Ofast -march=native -ffast-math)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
-    add_compile_options(/Ofast /Oa /EHs /QxHost /Qipo /Qunroll-aggressive
-                        /Qcomplex-limited-range /Qalias-const /Qvec-guard-write
-                        /Qopt-subscript-in-range /Qopt-matmul /Qopt-mem-layout-trans:3
-                        /Qopt-prefetch /Qopt-prefetch-issue-excl-hint /Qopt-dynamic-align
-                        /Qalign-loops /Qopt-zmm-usage:high /Qbranches-within-32B-boundaries
-                        /Qfp-speculation:fast /Qfast-transcendentals /Qimf-use-svml:true
-                        /Qfinite-math-only /Ob2 /ZI /Qfnalign /Qsfalign16 /Qalign-loops)
+    add_compile_options(/Ofast /Oa /EHs /QxHost /Qipo)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     add_compile_options(/Ox /favor:Intel64 /Ob2 /EHsc /fp:fast /Qspectre- /arch:AVX2
                         /openmp)
