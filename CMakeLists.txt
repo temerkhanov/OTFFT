@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.16)
 
 set(DEFAULT_BUILD_TYPE "Release")
 
+include(CheckLanguage)
+
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "Setting build type to '${DEFAULT_BUILD_TYPE}' as none was specified.")
   set(CMAKE_BUILD_TYPE "${DEFAULT_BUILD_TYPE}" CACHE
@@ -16,7 +18,13 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 
 enable_language(CXX)
 enable_language(C)
-enable_language(Fortran OPTIONAL)
+check_language(Fortran)
+
+if(CMAKE_Fortran_COMPILER)
+  enable_language(Fortran)
+else()
+  message(STATUS "No Fortran support")
+endif()
 
 include(FindOpenMP)
 if (OPENMP_FOUND)
