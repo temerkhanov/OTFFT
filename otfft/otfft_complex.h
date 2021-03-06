@@ -249,15 +249,18 @@ namespace OTFFT_Complex {
 #define SIMD_ALIGNMENT 16
 #endif
 
-#if defined(__AVX512F__) || defined (__AVX__) || defined (__SSE2__)
-    static inline void* simd_malloc(const size_t n) { return _mm_malloc(n, SIMD_ALIGNMENT); }
-    static inline void simd_free(void* p) { _mm_free(p); }
-#elif defined(SIMD_ALIGNMENT)
-    static inline void* simd_malloc(const size_t n) { return aligned_alloc(SIMD_ALIGNMENT, n); }
-    static inline void simd_free(void* p) { free(p); }
+#define ROUND_UP(x, y) ((y) * (((x) + (y) - 1) / (y)))
+
+#if defined(SIMD_ALIGNMENT)
+    static inline void* simd_malloc(const size_t n)
+    { return aligned_alloc(SIMD_ALIGNMENT, ROUND_UP(n, SIMD_ALIGNMENT)); }
+    static inline void simd_free(void* p)
+    { free(p); }
 #else
-    static inline void* simd_malloc(const size_t n) { return malloc(n); }
-    static inline void simd_free(void* p) { free(p); }
+    static inline void* simd_malloc(const size_t n)
+    { return malloc(n); }
+    static inline void simd_free(void* p)
+    { free(p); }
 #endif
 
 template <class T> struct simd_array
