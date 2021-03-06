@@ -6,7 +6,10 @@ set(OTFFT_GEN_HEADERS otfft_gen_delete.h otfft_gen_fwd.h otfft_gen_fwd0.h
 add_executable(ffttune ffttune.cpp)
 add_executable(rewrite rewrite.cpp)
 
-target_link_libraries(ffttune ${OpenMP_CXX_LIB_NAMES})
+if (OPENMP_FOUND)
+    target_link_libraries(ffttune ${OpenMP_CXX_LIB_NAMES})
+    target_link_libraries(otfft ${OpenMP_CXX_LIB_NAMES})
+endif()
 
 add_custom_command(OUTPUT ${OTFFT_GEN_HEADERS}
                    COMMAND ffttune
@@ -28,7 +31,6 @@ generate_export_header(otfft
                        EXPORT_MACRO_NAME OTFFT_EXPORT
                        EXPORT_FILE_NAME otfft_exports.h
                        STATIC_DEFINE SHARED_EXPORTS_BUILT_AS_STATIC)
-target_link_libraries(otfft ${OpenMP_CXX_LIB_NAMES})
 target_compile_definitions(otfft PRIVATE OTFFT_LIBRARY_BUILD)
 add_dependencies(otfft ffttune run_ffttune)
 target_include_directories(otfft BEFORE
