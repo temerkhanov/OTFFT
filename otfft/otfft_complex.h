@@ -235,6 +235,7 @@ static inline complex_t expj(const double& theta) NOEXCEPT
 #ifdef __MINGW32__
 #include <malloc.h>
 #endif
+#include <cstdlib>
 
 namespace OTFFT_Complex {
 
@@ -252,15 +253,17 @@ namespace OTFFT_Complex {
 #define ROUND_UP(x, y) ((y) * (((x) + (y) - 1) / (y)))
 
 #if defined(SIMD_ALIGNMENT)
-    static inline void* simd_malloc(const size_t n)
-    { return aligned_alloc(SIMD_ALIGNMENT, ROUND_UP(n, SIMD_ALIGNMENT)); }
-    static inline void simd_free(void* p)
-    { free(p); }
+#if defined(__SSE2__)
+    static inline void* simd_malloc(const size_t n) { return _mm_malloc(n, SIMD_ALIGNMENT); }
+    static inline void simd_free(void* p) { _mm_free(p); }
 #else
     static inline void* simd_malloc(const size_t n)
-    { return malloc(n); }
-    static inline void simd_free(void* p)
-    { free(p); }
+    { return aligned_alloc(SIMD_ALIGNMENT, ROUND_UP(n, SIMD_ALIGNMENT)); }
+    static inline void simd_free(void* p) { free(p); }
+#endif // defined(__SSE2__)
+#else
+    static inline void* simd_malloc(const size_t n) { return malloc(n); }
+    static inline void simd_free(void* p) { free(p); }
 #endif
 
 template <class T> struct simd_array
