@@ -6,8 +6,8 @@
 *  http://opensource.org/licenses/mit-license.php
 ******************************************************************************/
 
-#ifndef otfft_c_cpp
-#define otfft_c_cpp
+#ifndef __otfft_c__
+#define __otfft_c__
 
 #include "otfft.h"
 #include "otfft_c.h"
