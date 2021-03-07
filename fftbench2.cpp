@@ -56,14 +56,14 @@ double laptime1(int LOOPS, int TRIES, int N, complex_t* x)
     using namespace chrono;
     vector<counter_t> dt(TRIES);
     for (int i = 0; i < TRIES; i++) {
-        const system_clock::time_point t1 = system_clock::now();
+        const steady_clock::time_point t1 = high_resolution_clock::now();
         for (int j = 0; j < LOOPS; j++) {
             FFT fft(N, x);
             IFFT ifft(N, x);
             fft();
             ifft();
         }
-        const system_clock::time_point t2 = system_clock::now();
+        const steady_clock::time_point t2 = high_resolution_clock::now();
         dt[i] = duration_cast<microseconds>(t2 - t1).count();
         msleep(DELAY1);
     }
@@ -76,13 +76,13 @@ double laptime2(int LOOPS, int TRIES, int N, complex_t* x)
     using namespace chrono;
     vector<counter_t> dt(TRIES);
     for (int i = 0; i < TRIES; i++) {
-        const system_clock::time_point t1 = system_clock::now();
+        const steady_clock::time_point t1 = high_resolution_clock::now();
         for (int j = 0; j < LOOPS; j++) {
             FFT fft(N);
             fft.fwd(x);
             fft.inv(x);
         }
-        const system_clock::time_point t2 = system_clock::now();
+        const steady_clock::time_point t2 = high_resolution_clock::now();
         dt[i] = duration_cast<microseconds>(t2 - t1).count();
         msleep(DELAY1);
     }
