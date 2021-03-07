@@ -100,7 +100,7 @@ void initialize(const int N, complex_t* x)
 int main(int argc, char *argv[]) try
 {
     const int n_min  = argc >= 2 ? atoi(argv[1]) : 1;
-    const int n_max  = argc >= 3 ? atoi(argv[2]) : (argc == 2 ? n_min : 22);
+    const int n_max  = argc >= 3 ? atoi(argv[2]) : (argc == 2 ? n_min : 24);
     const int N_max  = 1 << n_max;
     const int nN_max = (max)(22*(1<<22), n_max*N_max);
     if (n_min < 1 || 24 < n_min) throw "argv[1] must be 1..24";
