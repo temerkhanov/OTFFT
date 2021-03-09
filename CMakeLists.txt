@@ -1,5 +1,7 @@
+cmake_policy(SET CMP0091 NEW)
+cmake_minimum_required(VERSION 3.19)
+
 project(otfft NONE)
-cmake_minimum_required(VERSION 3.16)
 
 set(DEFAULT_BUILD_TYPE "Release")
 
@@ -36,9 +38,8 @@ if(APPLE)
   set(CMAKE_OSX_ARCHITECTURES "arm64" CACHE STRING "Build architectures for Mac OS X" FORCE)
 endif(APPLE)
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "IntelClang")
-    set(MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-    add_compile_options(/Ofast /Oa /EHs /QxHost /Qipo)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "IntelLLVM")
+    add_compile_options(/Ofast /QxHost /Qipo /Qstd=c++17 /EHs)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
     add_compile_options(-Ofast -ffast-math -std=c++17)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -46,10 +47,18 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 elseif (CMAKE_CXX_COMPILER_ID MATCHES  "GNU")
     add_compile_options(-Ofast -march=native -ffast-math -std=c++17)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
-    add_compile_options(/Ofast /Oa /EHs /QxHost /Qipo /Qstd=c++17)
+    add_compile_options(/Ofast /Oa /EHs /QxHost /Qunroll /Qstd=c++17 /Qipo
+                        /Qcomplex-limited-range /Qansi-alias-check-
+                        /Qopt-subscript-in-range /Qopt-matmul
+                        /Qopt-prefetch /Qopt-prefetch-issue-excl-hint /Qopt-dynamic-align
+                        /Qalign-loops /Qopt-mem-layout-trans:3 /Qipo-jobs16
+                        /Qfp-speculation:fast /Qfast-transcendentals /Qimf-use-svml:true
+                        /Qfinite-math-only /Ob2 /Qfnalign /Qsfalign16 /Qalign-loops /Gv)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     add_compile_options(/Ox /favor:Intel64 /Ob2 /EHsc /fp:fast /Qspectre- /arch:AVX2
                         /openmp)
+else()
+    message(FATAL_ERROR "Unsupported compiler")
 endif ()
 
 add_subdirectory(otfft)

@@ -12,12 +12,12 @@ add_custom_command(OUTPUT ${OTFFT_GEN_HEADERS}
                    USES_TERMINAL
                    COMMENT "Tuning the library")
 
-add_custom_target(run_ffttune DEPENDS ffttune)
+add_custom_target(run_ffttune DEPENDS ffttune SOURCES ${OTFFT_GEN_HEADERS})
 
 add_library(otfft_shared SHARED otfft.cpp "otfft_c.cpp"  ${OTFFT_GEN_HEADERS})
 add_library(otfft_static STATIC otfft.cpp "otfft_c.cpp"  ${OTFFT_GEN_HEADERS})
 
-set_target_properties(otfft_shared PROPERTIES OUTPUT_NAME otfft)
+set_target_properties(otfft_shared PROPERTIES OUTPUT_NAME libotfft)
 set_target_properties(otfft_static PROPERTIES OUTPUT_NAME otfft)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
