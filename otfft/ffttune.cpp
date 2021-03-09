@@ -46,13 +46,12 @@ double laptime(int LOOPS, int TRIES, const FFT& fft, complex_t *x, complex_t *y)
 {
     using namespace chrono;
     typedef microseconds::rep counter_t;
-    static const int th = (n_max*(1<<n_max))/(14*(1<<14));
     counter_t sum = 0;
     vector<counter_t> dt(TRIES);
-    for (int i = 0; i < TRIES; i++) {
+    for (size_t i = 0; i < TRIES; i++) {
         //speedup_magic();
         const chrono::time_point t1 = high_resolution_clock::now();
-        for (int j = 0; j < LOOPS; j++) {
+        for (size_t j = 0; j < LOOPS; j++) {
             fft.fwd(x, y);
             fft.inv(x, y);
         }
@@ -62,27 +61,24 @@ double laptime(int LOOPS, int TRIES, const FFT& fft, complex_t *x, complex_t *y)
     }
     const double m = double(sum)/TRIES;
     double sum_dd = 0;
-    for (int i = 0; i < TRIES; i++) {
+    for (size_t i = 0; i < TRIES; i++) {
         const double d = dt[i] - m;
         sum_dd += d*d;
     }
     const double ss = sum_dd/TRIES;
     sum = 0;
     int n = 0;
-    for (int i = 0; i < TRIES; i++) {
+    for (size_t i = 0; i < TRIES; i++) {
         const double d = dt[i] - m;
         if (d*d <= 2*ss) { sum += dt[i]; n++; }
     }
-    if (LOOPS >= th)
-        cout << fixed << setw(10) << setprecision(3) << double(sum)/n/LOOPS << flush;
-    else
-        cout << fixed << setw(10) << setprecision(0) << double(sum)/n/LOOPS << flush;
+    cout << scientific << setw(10) << setprecision(3) << double(sum)/n/LOOPS << flush;
     return double(sum)/n;
 }
 
 void initialize(const int N, complex_vector x)
 {
-    for (int p = 0; p < N; p++) {
+    for (size_t p = 0; p < N; p++) {
         const double t = double(p)/N;
         x[p].Re = 10 * cos(3*2*M_PI*t*t);
         x[p].Im = 10 * sin(3*2*M_PI*t*t);
@@ -94,8 +90,8 @@ int tune(int n)
     static const int N_max  = 1 << n_max;
     static const int nN_max = n_max * N_max;
     const int N = 1 << n;
-    const int LOOPS = nN_max/(n*N);
-    const int TRIES = (min)(16, n*FACTOR);
+    const int LOOPS = max(8, nN_max/(n*N));
+    const int TRIES = min(16, n*FACTOR);
     double lap, tmp;
     int fastest = 1;
     complex_vector x = (complex_vector) simd_malloc(N*sizeof(complex_t));
