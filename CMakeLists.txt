@@ -1,5 +1,5 @@
 cmake_policy(SET CMP0091 NEW)
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.20)
 
 project(otfft NONE)
 
@@ -39,7 +39,8 @@ if(APPLE)
 endif(APPLE)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "IntelLLVM")
-    add_compile_options(/Ofast /QxHost /Qipo /Qstd=c++17 /EHs)
+    add_compile_options(-Ofast -QxHost -Qipo -Qstd=c++17 -EHs)
+    set(CMAKE_LINKER lld-link)
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
     add_compile_options(-Ofast -ffast-math -std=c++17)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
