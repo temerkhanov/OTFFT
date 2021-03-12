@@ -40,9 +40,9 @@ target_include_directories(otfft_static BEFORE
                            PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
 if (OPENMP_FOUND)
-    target_link_libraries(ffttune ${OpenMP_C_LIB_NAMES})
-    target_link_libraries(otfft_shared ${OpenMP_C_LIB_NAMES})
-    target_link_libraries(otfft_static ${OpenMP_C_LIB_NAMES})
+    target_link_libraries(ffttune ${OpenMP_CXX_LIB_NAMES})
+    target_link_libraries(otfft_shared ${OpenMP_CXX_LIB_NAMES})
+    target_link_libraries(otfft_static ${OpenMP_CXX_LIB_NAMES})
     if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND WIN32)
         target_link_libraries(ffttune libomp)
         target_link_libraries(otfft_shared libomp)
