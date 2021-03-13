@@ -39,8 +39,11 @@ if(APPLE)
 endif(APPLE)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "IntelLLVM")
-    add_compile_options(-Ofast -QxHost -Qipo -Qstd=c++17 -EHs)
-    set(CMAKE_LINKER lld-link)
+    add_compile_options(-Ox -QxHost -Qipo -Qstd=c++17 -fp:fast)
+    add_link_options(-Qipo)
+    if (OPENMP_FOUND)
+        add_compile_options(-Qopenmp)
+    endif()
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
     add_compile_options(-Ofast -ffast-math -std=c++17)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -54,7 +57,7 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
                         /Qopt-prefetch /Qopt-prefetch-issue-excl-hint /Qopt-dynamic-align
                         /Qalign-loops /Qopt-mem-layout-trans:3 /Qipo-jobs16
                         /Qfp-speculation:fast /Qfast-transcendentals /Qimf-use-svml:true
-                        /Qfinite-math-only /Ob2 /Qfnalign /Qsfalign16 /Qalign-loops /Gv)
+                        /Qfinite-math-only /Ob2 /Qfnalign /Qsfalign16 /Qalign-loops)
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     add_compile_options(/Ox /favor:Intel64 /Ob2 /EHsc /fp:fast /Qspectre- /arch:AVX2
                         /openmp)
