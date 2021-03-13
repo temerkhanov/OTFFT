@@ -128,7 +128,7 @@ template <int log_N, int mode, bool sng = 0> struct fwdffts
         else
         #pragma omp parallel
         {
-            part2(iv, x, y, W, Ws);
+            part3(iv, x, y, W, Ws);
         }
     }
 
@@ -304,7 +304,7 @@ template <int log_N, int mode, bool sng = 0> struct invffts
         else
         #pragma omp parallel
         {
-            part2(iv, x, y, W, Ws);
+            part3(iv, x, y, W, Ws);
         }
     }
 
