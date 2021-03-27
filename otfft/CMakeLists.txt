@@ -4,6 +4,7 @@ set(OTFFT_GEN_HEADERS otfft_gen_delete.h otfft_gen_fwd.h otfft_gen_fwd0.h
                       otfft_gen_invu.h otfft_gen_new.h otfft_gen_setup.h)
 
 add_executable(ffttune ffttune.cpp)
+add_executable(fftrun fftrun.cpp)
 add_executable(rewrite rewrite.cpp)
 
 add_custom_command(OUTPUT ${OTFFT_GEN_HEADERS}
@@ -41,10 +42,12 @@ target_include_directories(otfft_static BEFORE
 
 if (OPENMP_FOUND)
     target_link_libraries(ffttune ${OpenMP_CXX_LIB_NAMES})
+    target_link_libraries(fftrun ${OpenMP_CXX_LIB_NAMES})
     target_link_libraries(otfft_shared ${OpenMP_CXX_LIB_NAMES})
     target_link_libraries(otfft_static ${OpenMP_CXX_LIB_NAMES})
     if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND WIN32)
         target_link_libraries(ffttune libomp)
+        target_link_libraries(fftrun libomp)
         target_link_libraries(otfft_shared libomp)
         target_link_libraries(otfft_static libomp)
     endif()
