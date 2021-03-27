@@ -19,7 +19,6 @@ using namespace OTFFT_MISC;
 #ifdef DO_SINGLE_THREAD
 constexpr int OMP_THRESHOLD = 1<<30;
 #else
-//constexpr int OMP_THRESHOLD = 1<<15;
 constexpr int OMP_THRESHOLD = 1<<13;
 #endif
 

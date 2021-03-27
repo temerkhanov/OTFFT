@@ -24,10 +24,10 @@ constexpr int OMP_THRESHOLD = 1<<30;
 constexpr int OMP_THRESHOLD = 1<<12;
 #endif
 
-constexpr int EXP_THRESHOLD = 1<<18;
+constexpr int EXP_THRESHOLD = 1<<24;
 
 ///////////////////////////////////////////////////////////////////////////////
-// Forward Buffterfly Operation
+// Forward Butterfly Operation
 ///////////////////////////////////////////////////////////////////////////////
 
 template <int n, int s> struct fwdcore
