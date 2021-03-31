@@ -213,8 +213,8 @@ static void init_Wr(const int r, const int N, complex_vector W) noexcept
         }
     }
     else {
+        #pragma omp parallel for schedule(static)
         for (int k = 1; k < r; k++) {
-            #pragma omp parallel for schedule(static)
             for (int p = 0; p < Nr; p++) {
                 W[p + (k-1)*Nr] = expj(theta * k*p);
             }
@@ -391,6 +391,12 @@ static inline xmm divpd(const xmm a, const xmm b) NOEXCEPT force_inline;
 static inline xmm divpd(const xmm a, const xmm b) NOEXCEPT
 {
     return _mm_div_pd(a, b);
+}
+
+static inline void prefetch(const_complex_vector addr) NOEXCEPT force_inline;
+static inline void prefetch(const_complex_vector addr) NOEXCEPT
+{
+    return _mm_prefetch((const char *)addr, _MM_HINT_T0);
 }
 
 #if __cplusplus >= 201103L || defined(VC_CONSTEXPR)
@@ -801,6 +807,33 @@ static inline void setpz2(complex_vector z, const ymm x) NOEXCEPT
 #else
     _mm256_store_pd(&z->Re, x);
 #endif
+}
+
+static inline void setpz2nt(complex_vector z, const ymm x) NOEXCEPT force_inline3;
+static inline void setpz2nt(complex_vector z, const ymm x) NOEXCEPT
+{
+    _mm256_stream_pd(&z->Re, x);
+}
+
+template <bool nt>
+static inline void setpz2t(complex_vector z, const ymm x) NOEXCEPT force_inline3;
+template <bool nt>
+static inline void setpz2t(complex_vector z, const ymm x) NOEXCEPT
+{
+    if constexpr(nt)
+        _mm256_stream_pd(&z->Re, x);
+    else
+        _mm256_store_pd(&z->Re, x);
+}
+
+template <bool nt>
+static inline ymm getpz2t(const_complex_vector z) NOEXCEPT force_inline;
+template <bool nt>
+static inline ymm getpz2t(const_complex_vector z) NOEXCEPT
+{
+    if constexpr(nt)
+        return reinterpret_cast<__m256d>(_mm256_stream_load_si256((const __m256i*)&z->Re));
+    return _mm256_load_pd(&z->Re);
 }
 
 static inline ymm cnjpz2(const ymm xy) NOEXCEPT force_inline;

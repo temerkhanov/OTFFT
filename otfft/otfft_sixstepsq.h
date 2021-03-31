@@ -196,29 +196,29 @@ template <int log_N, int mode, bool sng = 0> struct fwdffts
     static void part3(const_index_vector iv,
             complex_vector x, complex_vector y, weight_t W, weight_t Ws) noexcept
     {
-        #pragma omp for schedule(guided)
+        #pragma omp for schedule(dynamic, 32)
         for (int i = 0; i < L; i++) {
             const int k = iv[i].row;
             const int p = iv[i].col;
             transpose_kernel(k, p, x);
         }
-        #pragma omp for schedule(guided)
+        #pragma omp for schedule(dynamic, 32)
         for (int p = 0; p < n; p++) {
             const int pn = p*n;
             OTFFT_FourStep::fwdfft<n,1,0,scale_1>()(x + pn, y + pn, Ws);
         }
-        #pragma omp for schedule(guided)
+        #pragma omp for schedule(dynamic, 32)
         for (int i = 0; i < L; i++) {
             const int k = iv[i].col;
             const int p = iv[i].row;
             mult_twiddle_factor_kernel(i, p, k, x, W);
         }
-        #pragma omp for schedule(guided)
+        #pragma omp for schedule(dynamic, 32)
         for (int k = 0; k < n; k++) {
             const int kn = k*n;
             OTFFT_FourStep::fwdfft<n,1,0,scale_1>()(x + kn, y + kn, Ws);
         }
-        #pragma omp for schedule(guided)
+        #pragma omp for schedule(dynamic, 32)
         for (int i = 0; i < L; i++) {
             const int k = iv[i].row;
             const int p = iv[i].col;
@@ -372,29 +372,29 @@ template <int log_N, int mode, bool sng = 0> struct invffts
     static void part3(const_index_vector iv,
             complex_vector x, complex_vector y, weight_t W, weight_t Ws) noexcept
     {
-        #pragma omp for schedule(guided)
+        #pragma omp for schedule(dynamic, 32)
         for (int i = 0; i < L; i++) {
             const int k = iv[i].row;
             const int p = iv[i].col;
             transpose_kernel(k, p, x);
         }
-        #pragma omp for schedule(guided)
+        #pragma omp for schedule(dynamic, 32)
         for (int p = 0; p < n; p++) {
             const int pn = p*n;
             OTFFT_FourStep::invfft<n,1,0,scale_1>()(x + pn, y + pn, Ws);
         }
-        #pragma omp for schedule(guided)
+        #pragma omp for schedule(dynamic, 32)
         for (int i = 0; i < L; i++) {
             const int k = iv[i].col;
             const int p = iv[i].row;
             mult_twiddle_factor_kernel(i, p, k, x, W);
         }
-        #pragma omp for schedule(guided)
+        #pragma omp for schedule(dynamic, 32)
         for (int k = 0; k < n; k++) {
             const int kn = k*n;
             OTFFT_FourStep::invfft<n,1,0,scale_1>()(x + kn, y + kn, Ws);
         }
-        #pragma omp for schedule(guided)
+        #pragma omp for schedule(dynamic, 32)
         for (int i = 0; i < L; i++) {
             const int k = iv[i].row;
             const int p = iv[i].col;
